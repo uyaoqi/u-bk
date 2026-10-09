@@ -1,0 +1,254 @@
+<!DOCTYPE html><html lang="zh-CN" data-astro-cid-wtxkghai> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>流萤文章编辑器 - Firefly Editor</title><!-- 引入 Marked 库用于客户端实时解析 Markdown (通过 CDN 引入以保持轻量) --><script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script><!-- 引入 Tailwind CSS (如果项目内未自动注入，这里确保可用) --><link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet"><style>:root{--primary: 139, 92, 246;--bg-card: rgba(255, 255, 255, .85);--border-color: rgba(229, 231, 235, 1)}.dark[data-astro-cid-wtxkghai]{--bg-card: rgba(30, 41, 59, .85);--border-color: rgba(71, 85, 105, 1)}[data-astro-cid-wtxkghai]::-webkit-scrollbar{width:6px;height:6px}[data-astro-cid-wtxkghai]::-webkit-scrollbar-track{background:transparent}[data-astro-cid-wtxkghai]::-webkit-scrollbar-thumb{background:#9ca3af80;border-radius:3px}.preview-content[data-astro-cid-wtxkghai] h1[data-astro-cid-wtxkghai]{font-size:1.5rem;font-weight:700;margin:1rem 0;border-bottom:1px solid #e5e7eb;padding-bottom:.5rem}.preview-content[data-astro-cid-wtxkghai] h2[data-astro-cid-wtxkghai]{font-size:1.25rem;font-weight:700;margin:.75rem 0}.preview-content[data-astro-cid-wtxkghai] p[data-astro-cid-wtxkghai]{margin:.5rem 0;line-height:1.625;font-size:.875rem}.preview-content[data-astro-cid-wtxkghai] code[data-astro-cid-wtxkghai]{background-color:#e5e7eb;padding:.125rem .375rem;border-radius:.25rem;font-size:.75rem;font-family:monospace}.dark[data-astro-cid-wtxkghai] .preview-content[data-astro-cid-wtxkghai] code[data-astro-cid-wtxkghai]{background-color:#374151}.preview-content[data-astro-cid-wtxkghai] pre[data-astro-cid-wtxkghai]{background-color:#f3f4f6;padding:.75rem;border-radius:.5rem;margin:.75rem 0;overflow-x:auto;font-size:.75rem}.dark[data-astro-cid-wtxkghai] .preview-content[data-astro-cid-wtxkghai] pre[data-astro-cid-wtxkghai]{background-color:#1f2937}.preview-content[data-astro-cid-wtxkghai] ul[data-astro-cid-wtxkghai]{list-style-type:disc;padding-left:1.25rem;margin:.5rem 0}.preview-content[data-astro-cid-wtxkghai] ol[data-astro-cid-wtxkghai]{list-style-type:decimal;padding-left:1.25rem;margin:.5rem 0}.preview-content[data-astro-cid-wtxkghai] blockquote[data-astro-cid-wtxkghai]{border-left:4px solid #8b5cf6;padding-left:1rem;margin:.5rem 0;font-style:italic;color:#4b5563}.dark[data-astro-cid-wtxkghai] .preview-content[data-astro-cid-wtxkghai] blockquote[data-astro-cid-wtxkghai]{color:#9ca3af}
+</style><script type="module" src="/_astro/page.CiPokonQ.js"></script></head> <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-200" data-astro-cid-wtxkghai> <!-- 导航头部 --> <header class="border-b border-[var(--border-color)] bg-white/70 dark:bg-slate-900/70 backdrop-blur-md sticky top-0 z-50 px-4 py-3 flex items-center justify-between" data-astro-cid-wtxkghai> <div class="flex items-center space-x-2" data-astro-cid-wtxkghai> <span class="text-xl" data-astro-cid-wtxkghai>✨</span> <div data-astro-cid-wtxkghai> <h1 class="text-md font-bold tracking-wide" data-astro-cid-wtxkghai>Firefly Editor</h1> <p class="text-xs text-slate-500 dark:text-slate-400" data-astro-cid-wtxkghai>流萤自适应文章撰写平台</p> </div> </div> <!-- 全局快捷操作 --> <div class="flex items-center space-x-2" data-astro-cid-wtxkghai> <!-- 亮暗模式切换 --> <button id="themeToggle" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 text-lg transition" title="切换主题" data-astro-cid-wtxkghai>
+🌓
+</button> <button id="copyBtn" class="bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-xs px-3 py-1.5 rounded-lg font-medium transition" data-astro-cid-wtxkghai>
+复制完整MD
+</button> <button id="downloadBtn" class="bg-violet-600 hover:bg-violet-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition shadow-sm shadow-violet-500/20" data-astro-cid-wtxkghai>
+导出文件
+</button> </div> </header> <!-- 移动端 & 平板端视图切换卡 (仅在非大屏下显示) --> <div class="lg:hidden flex border-b border-[var(--border-color)] bg-white dark:bg-slate-900 sticky top-[57px] z-40" data-astro-cid-wtxkghai> <button id="tab-meta" class="flex-1 py-3 text-xs font-semibold text-center border-b-2 border-violet-500 text-violet-600 transition" data-astro-cid-wtxkghai>
+⚙️ 文章设置
+</button> <button id="tab-edit" class="flex-1 py-3 text-xs font-semibold text-center border-b-2 border-transparent text-slate-500 transition" data-astro-cid-wtxkghai>
+📝 编写内容
+</button> <button id="tab-preview" class="flex-1 py-3 text-xs font-semibold text-center border-b-2 border-transparent text-slate-500 transition" data-astro-cid-wtxkghai>
+👁️ 实时预览
+</button> </div> <!-- 编辑器主体核心容器 --> <main class="h-[calc(100vh-115px)] lg:h-[calc(100vh-58px)] w-full overflow-hidden flex flex-col lg:flex-row" data-astro-cid-wtxkghai> <!-- 1. 左栏：Front-matter 配置区 --> <section id="panel-meta" class="w-full lg:w-1/4 border-r border-[var(--border-color)] bg-white/50 dark:bg-slate-900/50 p-4 overflow-y-auto lg:block" data-astro-cid-wtxkghai> <h2 class="text-sm font-bold text-slate-400 dark:text-slate-500 mb-4 uppercase tracking-wider" data-astro-cid-wtxkghai>Front-matter 配置</h2> <div class="space-y-4" data-astro-cid-wtxkghai> <!-- 标题 --> <div data-astro-cid-wtxkghai> <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1" data-astro-cid-wtxkghai>文章标题 (Title)</label> <input type="text" id="meta-title" value="我的第一篇流萤博客" class="w-full text-sm bg-white dark:bg-slate-800 border border-[var(--border-color)] rounded-lg px-3 py-2 focus:ring-2 focus:ring-violet-500 outline-none transition" data-astro-cid-wtxkghai> </div> <!-- 描述 --> <div data-astro-cid-wtxkghai> <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1" data-astro-cid-wtxkghai>描述 (Description)</label> <textarea id="meta-desc" rows="2" class="w-full text-sm bg-white dark:bg-slate-800 border border-[var(--border-color)] rounded-lg px-3 py-2 focus:ring-2 focus:ring-violet-500 outline-none transition resize-none" data-astro-cid-wtxkghai>这是一篇由流萤在线自适应编辑器生成的文章指南。</textarea> </div> <!-- 发布日期 & 分类 --> <div class="grid grid-cols-2 gap-2" data-astro-cid-wtxkghai> <div data-astro-cid-wtxkghai> <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1" data-astro-cid-wtxkghai>发布日期 (Published)</label> <input type="date" id="meta-date" class="w-full text-xs bg-white dark:bg-slate-800 border border-[var(--border-color)] rounded-lg px-2 py-2 focus:ring-2 focus:ring-violet-500 outline-none transition" data-astro-cid-wtxkghai> </div> <div data-astro-cid-wtxkghai> <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1" data-astro-cid-wtxkghai>分类 (Category)</label> <input type="text" id="meta-category" value="技术开发" class="w-full text-xs bg-white dark:bg-slate-800 border border-[var(--border-color)] rounded-lg px-2 py-2 focus:ring-2 focus:ring-violet-500 outline-none transition" data-astro-cid-wtxkghai> </div> </div> <!-- 标签 --> <div data-astro-cid-wtxkghai> <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1" data-astro-cid-wtxkghai>标签 (Tags，逗号隔开)</label> <input type="text" id="meta-tags" value="前端, Astro, Firefly" class="w-full text-sm bg-white dark:bg-slate-800 border border-[var(--border-color)] rounded-lg px-3 py-2 focus:ring-2 focus:ring-violet-500 outline-none transition" data-astro-cid-wtxkghai> </div> <!-- 封面图 --> <div data-astro-cid-wtxkghai> <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1" data-astro-cid-wtxkghai>封面图路径 (Image)</label> <input type="text" id="meta-image" value="/images/covers/firefly.jpg" class="w-full text-sm bg-white dark:bg-slate-800 border border-[var(--border-color)] rounded-lg px-3 py-2 focus:ring-2 focus:ring-violet-500 outline-none transition" data-astro-cid-wtxkghai> </div> <!-- 选项切换 (置顶, 草稿) --> <div class="space-y-2 pt-2 border-t border-[var(--border-color)]" data-astro-cid-wtxkghai> <div class="flex items-center justify-between" data-astro-cid-wtxkghai> <span class="text-xs font-medium text-slate-600 dark:text-slate-400" data-astro-cid-wtxkghai>是否草稿 (Draft)</span> <input type="checkbox" id="meta-draft" class="w-4 h-4 text-violet-600 border-gray-300 rounded focus:ring-violet-500" data-astro-cid-wtxkghai> </div> <div class="flex items-center justify-between" data-astro-cid-wtxkghai> <span class="text-xs font-medium text-slate-600 dark:text-slate-400" data-astro-cid-wtxkghai>是否置顶 (Pinned)</span> <input type="checkbox" id="meta-pinned" class="w-4 h-4 text-violet-600 border-gray-300 rounded focus:ring-violet-500" data-astro-cid-wtxkghai> </div> </div> </div> </section> <!-- 2. 中栏：Markdown 编辑器源码区 --> <section id="panel-edit" class="w-full lg:w-3/8 border-r border-[var(--border-color)] flex flex-col h-full hidden lg:flex" data-astro-cid-wtxkghai> <!-- 快速工具栏 --> <div class="bg-slate-100/50 dark:bg-slate-900/50 border-b border-[var(--border-color)] px-3 py-1.5 flex items-center space-x-1 overflow-x-auto" data-astro-cid-wtxkghai> <button onclick="insertMd('**', '**')" class="p-1 text-xs hover:bg-slate-200 dark:hover:bg-slate-800 rounded" title="加粗" data-astro-cid-wtxkghai><b data-astro-cid-wtxkghai>B</b></button> <button onclick="insertMd('*', '*')" class="p-1 text-xs hover:bg-slate-200 dark:hover:bg-slate-800 rounded italic" title="斜体" data-astro-cid-wtxkghai>I</button> <button onclick="insertMd('# ', '')" class="p-1 text-xs hover:bg-slate-200 dark:hover:bg-slate-800 rounded font-bold" title="标题" data-astro-cid-wtxkghai>H</button> <button onclick="insertMd('[', '](url)')" class="p-1 text-xs hover:bg-slate-200 dark:hover:bg-slate-800 rounded underline" title="超链接" data-astro-cid-wtxkghai>Link</button> <button onclick="insertMd('![', '](img_url)')" class="p-1 text-xs hover:bg-slate-200 dark:hover:bg-slate-800 rounded" title="图片" data-astro-cid-wtxkghai>Img</button> <button onclick="insertMd('```
+', '
+```')" class="p-1 text-xs hover:bg-slate-200 dark:hover:bg-slate-800 rounded font-mono" title="代码块" data-astro-cid-wtxkghai>&lt;/&gt;</button> <span class="text-slate-300 dark:text-slate-700" data-astro-cid-wtxkghai>|</span> <button id="clearBtn" class="p-1 text-xs hover:bg-red-100 dark:hover:bg-red-950 text-red-500 rounded" title="清空草稿" data-astro-cid-wtxkghai>清空</button> </div> <!-- 输入大文本域 --> <textarea id="editor" class="flex-1 w-full p-4 bg-transparent resize-none outline-none font-mono text-sm leading-relaxed" placeholder="在此开始您富有创造力的写作...（支持标准 Markdown 语法）" data-astro-cid-wtxkghai></textarea> <div class="px-4 py-2 border-t border-[var(--border-color)] bg-slate-50 dark:bg-slate-950 flex justify-between text-[11px] text-slate-400" data-astro-cid-wtxkghai> <span id="charCount" data-astro-cid-wtxkghai>字数: 0</span> <span data-astro-cid-wtxkghai>草稿自动备份中...</span> </div> </section> <!-- 3. 右栏：实时渲染预览区 --> <section id="panel-preview" class="w-full lg:w-3/8 p-4 overflow-y-auto hidden lg:block bg-white dark:bg-slate-900/40" data-astro-cid-wtxkghai> <h2 class="text-sm font-bold text-slate-400 dark:text-slate-500 mb-4 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800 pb-1.5" data-astro-cid-wtxkghai>实时预览</h2> <div id="preview" class="preview-content prose dark:prose-invert max-w-none text-slate-800 dark:text-slate-200" data-astro-cid-wtxkghai> <!-- Markdown HTML 内容将被动态渲染到这里 --> </div> </section> </main> <script>
+    // --- 客户端控制逻辑 ---
+
+    // 初始化默认日期
+    document.getElementById('meta-date').value = new Date().toISOString().substring(0, 10);
+
+    // 主题切换机制
+    const themeToggle = document.getElementById('themeToggle');
+    const rootClass = document.documentElement.classList;
+
+    // 默认读取系统及本地暗黑模式设定
+    if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      rootClass.add('dark');
+    } else {
+      rootClass.remove('dark');
+    }
+
+    themeToggle.addEventListener('click', () => {
+      if (rootClass.contains('dark')) {
+        rootClass.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        rootClass.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+
+    // 响应式三端自适应面板显隐逻辑
+    const tabMeta = document.getElementById('tab-meta');
+    const tabEdit = document.getElementById('tab-edit');
+    const tabPreview = document.getElementById('tab-preview');
+
+    const panelMeta = document.getElementById('panel-meta');
+    const panelEdit = document.getElementById('panel-edit');
+    const panelPreview = document.getElementById('panel-preview');
+
+    function switchMobileTab(activeTab, showPanel, hidePanels) {
+      // 样式激活
+      [tabMeta, tabEdit, tabPreview].forEach(t => {
+        t.classList.remove('border-violet-500', 'text-violet-600');
+        t.classList.add('border-transparent', 'text-slate-500');
+      });
+      activeTab.classList.remove('border-transparent', 'text-slate-500');
+      activeTab.classList.add('border-violet-500', 'text-violet-600');
+
+      // 面板控制
+      showPanel.classList.remove('hidden');
+      if (showPanel === panelEdit) {
+        showPanel.classList.add('flex'); // 保持 flex 架构
+      }
+      hidePanels.forEach(p => {
+        p.classList.add('hidden');
+        p.classList.remove('flex');
+      });
+    }
+
+    tabMeta.addEventListener('click', () => switchMobileTab(tabMeta, panelMeta, [panelEdit, panelPreview]));
+    tabEdit.addEventListener('click', () => switchMobileTab(tabEdit, panelEdit, [panelMeta, panelPreview]));
+    tabPreview.addEventListener('click', () => {
+      switchMobileTab(tabPreview, panelPreview, [panelMeta, panelEdit]);
+      renderMarkdown(); // 切换至预览时强制触发解析
+    });
+
+    // 监听屏幕尺寸变化，重置 PC 端的多栏布局
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 1024) {
+        panelMeta.classList.remove('hidden');
+        panelEdit.classList.remove('hidden');
+        panelEdit.classList.add('flex');
+        panelPreview.classList.remove('hidden');
+      } else {
+        // 手机端默认激活编写层
+        switchMobileTab(tabEdit, panelEdit, [panelMeta, panelPreview]);
+      }
+    });
+
+    // --- 核心 Markdown 逻辑 ---
+    const editor = document.getElementById('editor');
+    const preview = document.getElementById('preview');
+    const charCount = document.getElementById('charCount');
+
+    // 快捷插入 markdown 语法的通用函数
+    window.insertMd = function(before, after) {
+      const start = editor.selectionStart;
+      const end = editor.selectionEnd;
+      const text = editor.value;
+      const selected = text.substring(start, end);
+      const replacement = before + selected + after;
+      
+      editor.value = text.substring(0, start) + replacement + text.substring(end);
+      editor.focus();
+      editor.selectionStart = start + before.length;
+      editor.selectionEnd = start + before.length + selected.length;
+      
+      triggerChange();
+    };
+
+    // 组装 YAML Front-matter 元数据
+    function buildFullMarkdown() {
+      const title = document.getElementById('meta-title').value;
+      const desc = document.getElementById('meta-desc').value;
+      const date = document.getElementById('meta-date').value;
+      const category = document.getElementById('meta-category').value;
+      const tagsRaw = document.getElementById('meta-tags').value;
+      const image = document.getElementById('meta-image').value;
+      const draft = document.getElementById('meta-draft').checked;
+      const pinned = document.getElementById('meta-pinned').checked;
+
+      // 格式化标签列表
+      const tagsList = tagsRaw.split(',').map(t => t.trim()).filter(t => t.length > 0);
+      const tagsFormatted = tagsList.length > 0 ? `[${tagsList.join(', ')}]` : '[]';
+
+      const frontMatter = `---
+title: "${title}"
+published: ${date}
+description: "${desc.replace(/"/g, '\\"')}"
+image: "${image}"
+tags: ${tagsFormatted}
+category: "${category}"
+draft: ${draft}
+pinned: ${pinned}
+---
+
+`;
+      return frontMatter + editor.value;
+    }
+
+    // 渲染 Markdown 为 HTML 预览
+    function renderMarkdown() {
+      if (typeof marked !== 'undefined') {
+        preview.innerHTML = marked.parse(editor.value || '*当前暂无具体文章内容，请在中栏开始编写！*');
+      } else {
+        preview.innerHTML = `<p class="text-red-500">正在加载渲染解析引擎，请稍候...</p>`;
+      }
+      // 实时更新字数
+      charCount.textContent = `字数: ${editor.value.length}`;
+    }
+
+    // 本地内容变动同步
+    function triggerChange() {
+      renderMarkdown();
+      saveToLocalStorage();
+    }
+
+    // 本地缓存恢复机制 (避免内容丢失)
+    function saveToLocalStorage() {
+      const data = {
+        title: document.getElementById('meta-title').value,
+        desc: document.getElementById('meta-desc').value,
+        date: document.getElementById('meta-date').value,
+        category: document.getElementById('meta-category').value,
+        tags: document.getElementById('meta-tags').value,
+        image: document.getElementById('meta-image').value,
+        draft: document.getElementById('meta-draft').checked,
+        pinned: document.getElementById('meta-pinned').checked,
+        body: editor.value
+      };
+      localStorage.setItem('firefly_draft', JSON.stringify(data));
+    }
+
+    function loadFromLocalStorage() {
+      const cached = localStorage.getItem('firefly_draft');
+      if (cached) {
+        try {
+          const data = JSON.parse(cached);
+          document.getElementById('meta-title').value = data.title || '';
+          document.getElementById('meta-desc').value = data.desc || '';
+          document.getElementById('meta-date').value = data.date || '';
+          document.getElementById('meta-category').value = data.category || '';
+          document.getElementById('meta-tags').value = data.tags || '';
+          document.getElementById('meta-image').value = data.image || '';
+          document.getElementById('meta-draft').checked = data.draft || false;
+          document.getElementById('meta-pinned').checked = data.pinned || false;
+          editor.value = data.body || '';
+          renderMarkdown();
+        } catch (e) {
+          console.error("恢复草稿失败：", e);
+        }
+      }
+    }
+
+    // 事件绑定组
+    const inputs = ['meta-title', 'meta-desc', 'meta-date', 'meta-category', 'meta-tags', 'meta-image', 'meta-draft', 'meta-pinned'];
+    inputs.forEach(id => {
+      document.getElementById(id).addEventListener('input', triggerChange);
+      document.getElementById(id).addEventListener('change', triggerChange);
+    });
+    editor.addEventListener('input', triggerChange);
+
+    // 复制完整 Markdown 结构（含 YAML）
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      const fullText = buildFullMarkdown();
+      navigator.clipboard.writeText(fullText).then(() => {
+        const btn = document.getElementById('copyBtn');
+        btn.innerText = '已复制！';
+        btn.classList.replace('bg-slate-200', 'bg-emerald-500');
+        btn.classList.add('text-white');
+        setTimeout(() => {
+          btn.innerText = '复制完整MD';
+          btn.classList.replace('bg-emerald-500', 'bg-slate-200');
+          btn.classList.remove('text-white');
+        }, 2000);
+      }).catch(err => {
+        alert('复制失败，请手动选择并复制。' + err);
+      });
+    });
+
+    // 导出并下载为 .md 文件
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const title = document.getElementById('meta-title').value || 'untitled';
+      const fullText = buildFullMarkdown();
+      const blob = new Blob([fullText], { type: 'text/markdown;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${title.trim().toLowerCase().replace(/\s+/g, '-')}.md`;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+    // 清除草稿
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      if (confirm('确定要清空编辑区吗？这会清除本地保存的实时草稿。')) {
+        editor.value = '';
+        localStorage.removeItem('firefly_draft');
+        triggerChange();
+      }
+    });
+
+    // 页面初次载入
+    window.addEventListener('DOMContentLoaded', () => {
+      loadFromLocalStorage();
+      // 在小屏幕上打开时，首先激活编辑区
+      if (window.innerWidth < 1024) {
+        switchMobileTab(tabEdit, panelEdit, [panelMeta, panelPreview]);
+      }
+    });
+  </script> </body> </html>
